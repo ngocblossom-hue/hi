@@ -1,0 +1,300 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Life Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    color:#222;
+}
+
+header{
+    background:#111827;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+
+.section{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+h2{
+    margin-bottom:15px;
+}
+
+textarea{
+    width:100%;
+    min-height:150px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:12px;
+    resize:vertical;
+    font-size:15px;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
+button{
+    margin-top:10px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.week-grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:10px;
+}
+
+.day{
+    background:#f8fafc;
+    padding:10px;
+    border-radius:10px;
+}
+
+.day textarea{
+    min-height:120px;
+}
+
+.footer{
+    text-align:center;
+    color:#666;
+    margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🌱 My Personal Life Dashboard</h1>
+<p>Ideas • Work • Goals • Journal • Schedule</p>
+</header>
+
+<div class="container">
+
+<div class="grid">
+
+<div class="section">
+<h2>💡 Ý tưởng lướt qua</h2>
+<textarea id="ideas"></textarea>
+<button onclick="save('ideas')">Lưu</button>
+</div>
+
+<div class="section">
+<h2>🛠 Workplace</h2>
+<textarea id="workspace"></textarea>
+<button onclick="save('workspace')">Lưu</button>
+</div>
+
+</div>
+
+<div class="section">
+<h2>🎯 Mục tiêu & Nghề nghiệp</h2>
+<textarea id="goals"></textarea>
+<button onclick="save('goals')">Lưu</button>
+</div>
+
+<div class="section">
+<h2>📔 Nhật ký hôm nay</h2>
+
+<input type="date" id="journalDate">
+
+<br><br>
+
+<textarea id="journal"></textarea>
+
+<button onclick="saveJournal()">Lưu nhật ký</button>
+
+</div>
+
+<div class="section">
+<h2>📅 Thời khóa biểu tuần</h2>
+
+<div class="week-grid">
+
+<div class="day">
+<b>Thứ 2</b>
+<textarea id="mon"></textarea>
+</div>
+
+<div class="day">
+<b>Thứ 3</b>
+<textarea id="tue"></textarea>
+</div>
+
+<div class="day">
+<b>Thứ 4</b>
+<textarea id="wed"></textarea>
+</div>
+
+<div class="day">
+<b>Thứ 5</b>
+<textarea id="thu"></textarea>
+</div>
+
+<div class="day">
+<b>Thứ 6</b>
+<textarea id="fri"></textarea>
+</div>
+
+<div class="day">
+<b>Thứ 7</b>
+<textarea id="sat"></textarea>
+</div>
+
+<div class="day">
+<b>Chủ nhật</b>
+<textarea id="sun"></textarea>
+</div>
+
+</div>
+
+<button onclick="saveSchedule()">Lưu thời khóa biểu</button>
+
+</div>
+
+<div class="section">
+<h2>📝 Khu vực tự do</h2>
+<textarea id="freezone"></textarea>
+<button onclick="save('freezone')">Lưu</button>
+</div>
+
+<div class="footer">
+Dữ liệu được lưu trên trình duyệt của bạn.
+</div>
+
+</div>
+
+<script>
+
+function save(id){
+    localStorage.setItem(id,
+    document.getElementById(id).value);
+
+    alert("Đã lưu!");
+}
+
+function load(id){
+    document.getElementById(id).value =
+    localStorage.getItem(id) || "";
+}
+
+function saveSchedule(){
+
+    const days =
+    ['mon','tue','wed','thu','fri','sat','sun'];
+
+    days.forEach(day=>{
+        localStorage.setItem(
+            day,
+            document.getElementById(day).value
+        );
+    });
+
+    alert("Đã lưu thời khóa biểu!");
+}
+
+function loadSchedule(){
+
+    const days =
+    ['mon','tue','wed','thu','fri','sat','sun'];
+
+    days.forEach(day=>{
+        document.getElementById(day).value =
+        localStorage.getItem(day) || "";
+    });
+}
+
+function saveJournal(){
+
+    const date =
+    document.getElementById('journalDate').value;
+
+    const content =
+    document.getElementById('journal').value;
+
+    if(!date){
+        alert("Chọn ngày trước.");
+        return;
+    }
+
+    localStorage.setItem(
+        "journal_"+date,
+        content
+    );
+
+    alert("Đã lưu nhật ký.");
+}
+
+document
+.getElementById("journalDate")
+.addEventListener("change",function(){
+
+    const content =
+    localStorage.getItem(
+        "journal_"+this.value
+    ) || "";
+
+    document.getElementById("journal").value =
+    content;
+});
+
+load('ideas');
+load('workspace');
+load('goals');
+load('freezone');
+loadSchedule();
+
+document.getElementById('journalDate').value =
+new Date().toISOString().split('T')[0];
+
+document.getElementById('journalDate')
+.dispatchEvent(new Event('change'));
+
+</script>
+
+</body>
+</html>
+```
